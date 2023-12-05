@@ -97,7 +97,29 @@ class HomeScreen extends StatelessWidget {
         title: Text("Employee Details"),
         centerTitle: true,
       ),
-      body: Column(),
+      body: StreamBuilder(
+        stream: CloudFireStoreHelper.cloudFireStoreHelper.fetchEmployee(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          } else if (snapshot.hasData) {
+            List<QueryDocumentSnapshot<Map<String, dynamic>>>? data =
+                snapshot.data?.docs;
+            return ListView.builder(
+                itemCount: data?.length,
+                itemBuilder: (ctx, i) {
+                  return Card(
+                    child: ListTile(
+                      title: Text("${data?[i]['name']}"),
+                      subtitle: Text("${data?[i]['post']}"),
+                      trailing: Text("${data?[i]['salary']}"),
+                    ),
+                  );
+                });
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
     );
   }
 }

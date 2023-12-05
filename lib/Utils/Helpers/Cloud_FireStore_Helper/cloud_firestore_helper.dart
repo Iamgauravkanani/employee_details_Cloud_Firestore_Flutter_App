@@ -13,4 +13,8 @@ class CloudFireStoreHelper {
         .doc("${emp_details['name']}")
         .set(emp_details);
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchEmployee() {
+    return firebaseFirestore.collection("employee").snapshots();
+  }
 }
